@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Onze Herinneringen</title>
+<style>
+  :root{
+    --bg: #372a1f;
+    --bg-2: #2f2419;
+    --paper: #fbf7ee;
+    --paper-edge: #f0e9d8;
+    --ink: #2a2118;
+    --ink-soft: #6b5c4a;
+    --accent: #b5482e;
+    --accent-dark: #8f3620;
+    --accent2: #7c8b6f;
+    --accent2-dark: #616e54;
+    --gold: #c9a227;
+    --font-display: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+    --font-hand: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family: var(--font-body);
+    color: var(--ink);
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 6px),
+      radial-gradient(ellipse at top, var(--bg) 0%, var(--bg-2) 100%);
+    min-height:100vh;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .app{ max-width: 780px; margin: 0 auto; padding: 28px 16px 120px; }
+
+  header{ text-align:center; padding: 12px 0 28px; }
+  header h1{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(28px, 6vw, 40px);
+    color: var(--paper);
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+  header .rule{
+    width: 72px; height: 3px; margin: 12px auto 0;
+    background: var(--gold);
+    border-radius: 2px;
+  }
+  header p{
+    font-family: var(--font-hand);
+    color: var(--gold);
+    font-size: 18px;
+    margin: 10px 0 0;
+    opacity: 0.9;
+  }
+  .toolbar{
+    display:flex; justify-content:center; gap:10px; margin-top:16px; flex-wrap:wrap;
+  }
+  .tool-btn{
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    background: transparent;
+    border: 1px solid rgba(251,247,238,0.35);
+    color: var(--paper);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    opacity: 0.85;
+    transition: background 0.15s, opacity 0.15s;
+  }
+  .tool-btn:hover{ background: rgba(251,247,238,0.12); opacity:1; }
+
+  .empty{
+    text-align:center;
+    color: var(--paper);
+    opacity: 0.75;
+    padding: 60px 20px;
+    font-family: var(--font-display);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  .empty span{ display:block; font-family: var(--font-hand); font-size: 24px; color: var(--gold); margin-bottom: 6px; }
+
+  .year-block{ margin-bottom: 40px; }
+  .year-header{
+    display:flex; align-items:baseline; justify-content:space-between;
+    border-bottom: 1px solid rgba(251,247,238,0.25);
+    padding-bottom: 8px; margin-bottom: 18px;
+  }
+  .year-header h2{
+    font-family: var(--font-display);
+    color: var(--paper);
+    font-size: 26px;
+    margin: 0;
+    letter-spacing: 0.03em;
+  }
+  .print-year-btn{
+    font-family: var(--font-body);
+    font-size: 13px;
+    background: transparent;
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .print-year-btn:hover{ background: var(--accent2); color: var(--paper); }
+
+  .card-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 22px 16px;
+  }
+  .card{
+    background: var(--paper);
+    padding: 10px 10px 14px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.15s;
+  }
+  .card:active{ transform: scale(0.98); }
+  .rot-1{ transform: rotate(-2.4deg); } .rot-1:hover{ transform: rotate(-2.4deg) scale(1.03); }
+  .rot-2{ transform: rotate(1.6deg); }  .rot-2:hover{ transform: rotate(1.6deg) scale(1.03); }
+  .rot-3{ transform: rotate(-0.8deg); } .rot-3:hover{ transform: rotate(-0.8deg) scale(1.03); }
+  .rot-4{ transform: rotate(2.2deg); }  .rot-4:hover{ transform: rotate(2.2deg) scale(1.03); }
+  .rot-5{ transform: rotate(-1.6deg); } .rot-5:hover{ transform: rotate(-1.6deg) scale(1.03); }
+
+  .card .tape{
+    position:absolute; top:-10px; left:50%; transform: translateX(-50%) rotate(-3deg);
+    width: 54px; height: 20px;
+    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.6);
+  }
+  .card img{
+    width: 100%; aspect-ratio: 1/1; object-fit: cover; display:block; background: #ddd;
+  }
+  .card .badge{
+    position:absolute; top:8px; right:8px;
+    background: rgba(42,33,24,0.75); color:#fff;
+    font-size: 11px; padding: 2px 7px; border-radius: 10px;
+  }
+  .card .cap{
+    padding-top: 10px;
+    text-align:center;
+  }
+  .card .cap .a{
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .card .cap .d{
+    font-family: var(--font-hand);
+    font-size: 16px;
+    color: var(--accent-dark);
+  }
+  .card .cap .t{
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  .fab{
+    position: fixed; right: 20px; bottom: 24px;
+    width: 58px; height: 58px; border-radius: 50%;
+    background: var(--accent); color: #fff; border: none;
+    font-size: 30px; line-height: 58px; text-align:center; padding:0;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    cursor: pointer;
+  }
+  .fab:active{ background: var(--accent-dark); }
+
+  /* Modal */
+  .overlay{
+    position: fixed; inset: 0; background: rgba(20,14,8,0.6);
+    display:flex; align-items:flex-end; justify-content:center;
+    z-index: 50;
+    animation: fadeIn 0.15s ease-out;
+  }
+  @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+  .sheet{
+    background: var(--paper);
+    width: 100%; max-width: 480px;
+    border-radius: 18px 18px 0 0;
+    padding: 22px 20px 28px;
+    max-height: 92vh; overflow-y:auto;
+  }
+  @media (min-width: 540px){
+    .overlay{ align-items:center; }
+    .sheet{ border-radius: 18px; }
+  }
+  .sheet h3{
+    font-family: var(--font-display);
+    margin: 0 0 16px;
+    font-size: 22px;
+    color: var(--ink);
+  }
+  .field{ margin-bottom: 16px; }
+  .field label{
+    display:block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--ink-soft); margin-bottom: 6px;
+  }
+  .field input[type=date], .field textarea{
+    width:100%; padding: 10px 12px; border: 1px solid #d8cfb9; border-radius: 10px;
+    font-family: var(--font-body); font-size: 15px; background: #fff; color: var(--ink);
+  }
+  .field textarea{ resize: vertical; min-height: 90px; }
+  .photo-picker{
+    display:flex; gap:10px; flex-wrap:wrap;
+  }
+  .photo-picker label{
+    flex:1; min-width: 130px;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    border: 1px dashed var(--ink-soft); border-radius: 10px;
+    padding: 14px 8px; cursor:pointer; font-size: 14px; color: var(--ink-soft);
+    text-transform:none; letter-spacing:normal;
+  }
+  .photo-picker input{ display:none; }
+  .photo-picker.is-full label{ opacity:0.4; pointer-events:none; }
+  .photo-thumbs{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .photo-thumbs .thumb{ position:relative; width:76px; height:76px; }
+  .photo-thumbs .thumb img{ width:100%; height:100%; object-fit:cover; border-radius:8px; display:block; }
+  .photo-thumbs .thumb-remove{
+    position:absolute; top:-6px; right:-6px; width:22px; height:22px; border-radius:50%;
+    background: var(--accent); color:#fff; border: 2px solid var(--paper);
+    font-size: 13px; line-height:1; cursor:pointer; padding:0;
+  }
+  .photo-hint{ font-size: 11px; color: var(--ink-soft); margin-top: 6px; }
+  .preview-wrap{ margin-top: 12px; text-align:center; }
+  .preview-wrap img{ max-width: 100%; max-height: 220px; border-radius: 8px; margin: 0 4px; }
+  .view-gallery{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+  .view-gallery img{ max-width: 31%; max-height: 200px; border-radius: 8px; object-fit:cover; }
+  .sheet-actions{ display:flex; gap: 10px; margin-top: 6px; }
+  .btn{
+    flex:1; padding: 12px; border-radius: 10px; border:none; font-size:15px; cursor:pointer;
+    font-family: var(--font-body);
+  }
+  .btn-primary{ background: var(--accent); color:#fff; }
+  .btn-primary:active{ background: var(--accent-dark); }
+  .btn-secondary{ background: transparent; color: var(--ink-soft); border: 1px solid #d8cfb9; }
+  .btn-danger{ background: transparent; color: var(--accent-dark); border: 1px solid var(--accent); }
+
+  .view-actions{ display:flex; gap:10px; margin-top: 4px; }
+
+  /* Print */
+  #printRoot{ display:none; }
+  @media print{
+    .app{ display:none !important; }
+    #printRoot{ display:block !important; }
+    @page{ size: A4; margin: 0; }
+    body{ background: #fff; }
+  }
+  .print-page{
+    width: 210mm; height: 297mm;
+    box-sizing: border-box;
+    padding: 10mm 12mm;
+    display:flex;
+    flex-direction: column;
+    background:#fff;
+    page-break-after: always;
+  }
+  .print-page:last-child{ page-break-after: auto; }
+  .print-title{
+    font-family: var(--font-display); font-weight:700; font-size: 16pt; color:#222;
+    text-align:center; margin-bottom: 8mm; flex: 0 0 auto;
+  }
+  .print-days{ flex:1; min-height:0; display:flex; flex-direction:column; }
+  .print-day{
+    flex: 1 1 33.333%;
+    max-height: 33.333%;
+    min-height: 0;
+    display:flex;
+    align-items: stretch;
+    gap: 6mm;
+    padding-bottom: 5mm;
+    margin-bottom: 5mm;
+    border-bottom: 0.5pt solid #cfcfcf;
+  }
+  .print-day:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
+  .print-day-photos{
+    flex: 0 0 58%;
+    display:flex; align-items:center; justify-content:center; gap: 3mm; min-width:0; height:100%;
+  }
+  .print-day-photos .ph{
+    flex:1 1 0; min-width:0; height:100%;
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .print-day-photos .ph img{ display:block; width:100%; height:100%; object-fit:contain; }
+  .print-day-text{
+    flex:1; min-width:0; min-height:0; overflow:hidden;
+    display:flex; flex-direction:column; justify-content:center;
+    padding-left: 2mm;
+  }
+  .print-day-text .activity{ font-family: var(--font-display); font-weight:700; font-size: 13pt; color:#222; }
+  .print-day-text .date{ font-family: var(--font-hand); font-size: 11pt; color:#666; margin-top: 1mm; }
+  .print-day-text .text{
+    font-family: var(--font-body); font-size: 9.5pt; color:#333; margin-top: 2.5mm; line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 7; -webkit-box-orient: vertical; overflow: hidden;
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Onze Herinneringen</h1>
+      <div class="rule"></div>
+      <p>momentjes, bewaard voor later</p>
+      <div class="toolbar">
+        <button class="tool-btn" id="backupBtn">⬇️ Back-up maken</button>
+        <button class="tool-btn" id="restoreBtn">⬆️ Back-up herstellen</button>
+        <input type="file" id="restoreInput" accept="application/json" style="display:none;">
+      </div>
+    </header>
+    <main id="timeline"></main>
+  </div>
+  <button class="fab" id="addBtn" aria-label="Nieuwe herinnering toevoegen">+</button>
+
+  <div id="modalRoot"></div>
+  <div id="printRoot"></div>
+
+<script>
+(function(){
+  "use strict";
+  const DB_NAME = 'herinneringenDB';
+  const DB_VERSION = 1;
+  const STORE = 'memories';
+
+  function openDB(){
+    return new Promise((resolve, reject)=>{
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = (e)=>{
+        const db = e.target.result;
+        if(!db.objectStoreNames.contains(STORE)){
+          const store = db.createObjectStore(STORE, {keyPath:'id', autoIncrement:true});
+          store.createIndex('date', 'date');
+        }
+      };
+      req.onsuccess = (e)=> resolve(e.target.result);
+      req.onerror = (e)=> reject(e.target.error);
+    });
+  }
+
+  async function dbAdd(memory){
+    const db = await openDB();
+    return new Promise((resolve, reject)=>{
+      const tx = db.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).add(memory);
+      tx.oncomplete = ()=> resolve();
+      tx.onerror = (e)=> reject(e.target.error);
+    });
+  }
+  async function dbPut(memory){
+    const db = await openDB();
+    return new Promise((resolve, reject)=>{
+      const tx = db.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).put(memory);
+      tx.oncomplete = ()=> resolve();
+      tx.onerror = (e)=> reject(e.target.error);
+    });
+  }
+  async function dbDelete(id){
+    const db = await openDB();
+    return new Promise((resolve, reject)=>{
+      const tx = db.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).delete(id);
+      tx.oncomplete = ()=> resolve();
+      tx.onerror = (e)=> reject(e.target.error);
+    });
+  }
+  async function dbGetAll(){
+    const db = await openDB();
+    return new Promise((resolve, reject)=>{
+      const tx = db.transaction(STORE, 'readonly');
+      const req = tx.objectStore(STORE).getAll();
+      req.onsuccess = ()=> resolve(req.result || []);
+      req.onerror = (e)=> reject(e.target.error);
+    });
+  }
+
+  function resizeImage(file, maxDim=2000, quality=0.9){
+    return new Promise((resolve, reject)=>{
+      const reader = new FileReader();
+      reader.onload = (e)=>{
+        const img = new Image();
+        img.onload = ()=>{
+          let {width, height} = img;
+          if(width > height && width > maxDim){ height = Math.round(height * maxDim/width); width = maxDim; }
+          else if(height >= width && height > maxDim){ width = Math.round(width * maxDim/height); height = maxDim; }
+          const canvas = document.createElement('canvas');
+          canvas.width = width; canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function escapeHtml(str){
+    return (str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function formatDate(iso){
+    const d = new Date(iso + 'T00:00:00');
+    if(isNaN(d)) return iso;
+    return d.toLocaleDateString('nl-BE', {day:'numeric', month:'long', year:'numeric'});
+  }
+  function todayIso(){
+    const d = new Date();
+    return d.toISOString().slice(0,10);
+  }
+
+  const timelineEl = document.getElementById('timeline');
+  const modalRoot = document.getElementById('modalRoot');
+  const printRoot = document.getElementById('printRoot');
+
+  let currentMemories = [];
+
+  async function render(){
+    currentMemories = await dbGetAll();
+    currentMemories.sort((a,b)=> b.date.localeCompare(a.date));
+
+    if(currentMemories.length === 0){
+      timelineEl.innerHTML = `<div class="empty"><span>Nog leeg hier</span>Voeg jullie eerste herinnering toe met de knop rechtsonder.</div>`;
+      return;
+    }
+
+    const byYear = {};
+    currentMemories.forEach(m=>{
+      const year = (m.date || '0000').slice(0,4);
+      (byYear[year] = byYear[year] || []).push(m);
+    });
+    const years = Object.keys(byYear).sort((a,b)=> b.localeCompare(a));
+
+    timelineEl.innerHTML = years.map(year => `
+      <section class="year-block">
+        <div class="year-header">
+          <h2>${year}</h2>
+          <button class="print-year-btn" data-year="${year}">Druk ${year} af</button>
+        </div>
+        <div class="card-grid">
+          ${byYear[year].map(cardHTML).join('')}
+        </div>
+      </section>
+    `).join('');
+
+    timelineEl.querySelectorAll('.card').forEach(el=>{
+      el.addEventListener('click', ()=> openViewModal(Number(el.dataset.id)));
+    });
+    timelineEl.querySelectorAll('.print-year-btn').forEach(el=>{
+      el.addEventListener('click', ()=> printYear(el.dataset.year));
+    });
+  }
+
+  function cardHTML(m){
+    const rot = 'rot-' + ((m.id % 5) + 1);
+    const photos = m.photos || [];
+    return `
+      <div class="card ${rot}" data-id="${m.id}">
+        <div class="tape"></div>
+        <img src="${photos[0] || ''}" alt="">
+        ${photos.length > 1 ? `<div class="badge">1/${photos.length}</div>` : ''}
+        <div class="cap">
+          ${m.activity ? `<div class="a">${escapeHtml(m.activity)}</div>` : ''}
+          <div class="d">${formatDate(m.date)}</div>
+          ${m.text ? `<div class="t">${escapeHtml(m.text)}</div>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  // ---- Add / edit modal ----
+  const MAX_PHOTOS = 3;
+
+  function openFormModal(mode, memory){
+    const isEdit = mode === 'edit';
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.innerHTML = `
+      <div class="sheet">
+        <h3>${isEdit ? 'Dag bewerken' : 'Nieuwe dag'}</h3>
+        <div class="field">
+          <label>Foto's (max 3)</label>
+          <div class="photo-picker" id="photoPicker">
+            <label>📷 Maak foto<input type="file" accept="image/*" capture="environment" id="camInput"></label>
+            <label>🖼️ Kies uit galerij<input type="file" accept="image/*" multiple id="fileInput"></label>
+          </div>
+          <div class="photo-thumbs" id="photoThumbs"></div>
+          <div class="photo-hint">Je kan tot 3 foto's per dag toevoegen.</div>
+        </div>
+        <div class="field">
+          <label>Activiteit</label>
+          <input type="text" id="activityInput" maxlength="60" placeholder="bv. Wandeling aan zee" value="${isEdit ? escapeHtml(memory.activity || '') : ''}">
+        </div>
+        <div class="field">
+          <label>Datum</label>
+          <input type="date" id="dateInput" value="${isEdit ? memory.date : todayIso()}">
+        </div>
+        <div class="field">
+          <label>Kort tekstje</label>
+          <textarea id="textInput" maxlength="600" placeholder="Waarom is dit moment speciaal?">${isEdit ? escapeHtml(memory.text || '') : ''}</textarea>
+        </div>
+        <div class="sheet-actions">
+          <button class="btn btn-secondary" id="cancelBtn">Annuleren</button>
+          <button class="btn btn-primary" id="saveBtn">Bewaren</button>
+        </div>
+      </div>
+    `;
+    modalRoot.appendChild(overlay);
+
+    let photos = isEdit ? [...(memory.photos || [])] : [];
+
+    function renderThumbs(){
+      const wrap = overlay.querySelector('#photoThumbs');
+      wrap.innerHTML = photos.map((p, i) => `
+        <div class="thumb">
+          <img src="${p}">
+          <button type="button" class="thumb-remove" data-i="${i}">×</button>
+        </div>
+      `).join('');
+      wrap.querySelectorAll('.thumb-remove').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          photos.splice(Number(btn.dataset.i), 1);
+          renderThumbs();
+        });
+      });
+      overlay.querySelector('#photoPicker').classList.toggle('is-full', photos.length >= MAX_PHOTOS);
+    }
+    renderThumbs();
+
+    async function handleFiles(fileList){
+      const files = Array.from(fileList || []);
+      for(const file of files){
+        if(photos.length >= MAX_PHOTOS){
+          alert('Je kan maximaal 3 foto\'s per dag toevoegen.');
+          break;
+        }
+        photos.push(await resizeImage(file));
+      }
+      renderThumbs();
+    }
+    overlay.querySelector('#camInput').addEventListener('change', e=>{ handleFiles(e.target.files); e.target.value=''; });
+    overlay.querySelector('#fileInput').addEventListener('change', e=>{ handleFiles(e.target.files); e.target.value=''; });
+
+    overlay.querySelector('#cancelBtn').addEventListener('click', ()=> overlay.remove());
+    overlay.addEventListener('click', (e)=>{ if(e.target === overlay) overlay.remove(); });
+
+    overlay.querySelector('#saveBtn').addEventListener('click', async ()=>{
+      const date = overlay.querySelector('#dateInput').value || todayIso();
+      const activity = overlay.querySelector('#activityInput').value.trim();
+      const text = overlay.querySelector('#textInput').value.trim();
+
+      if(photos.length === 0){
+        alert('Kies eerst minstens 1 foto.');
+        return;
+      }
+
+      if(isEdit){
+        await dbPut({ id: memory.id, photos, date, activity, text });
+      } else {
+        await dbAdd({ photos, date, activity, text });
+      }
+      overlay.remove();
+      render();
+    });
+  }
+
+  function openViewModal(id){
+    const memory = currentMemories.find(m=> m.id === id);
+    if(!memory) return;
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.innerHTML = `
+      <div class="sheet">
+        <div class="view-gallery">
+          ${(memory.photos || []).map(p => `<img src="${p}">`).join('')}
+        </div>
+        ${memory.activity ? `<h3 style="margin-top:14px; margin-bottom:2px;">${escapeHtml(memory.activity)}</h3>` : ''}
+        <p style="font-family:var(--font-hand); color:var(--accent-dark); font-size:16px; margin:2px 0 8px;">${formatDate(memory.date)}</p>
+        ${memory.text ? `<p style="color:var(--ink-soft); margin-top:0;">${escapeHtml(memory.text)}</p>` : ''}
+        <div class="view-actions">
+          <button class="btn btn-secondary" id="closeBtn">Sluiten</button>
+          <button class="btn btn-secondary" id="editBtn">Bewerken</button>
+          <button class="btn btn-danger" id="delBtn">Verwijderen</button>
+        </div>
+      </div>
+    `;
+    modalRoot.appendChild(overlay);
+    overlay.addEventListener('click', (e)=>{ if(e.target === overlay) overlay.remove(); });
+    overlay.querySelector('#closeBtn').addEventListener('click', ()=> overlay.remove());
+    overlay.querySelector('#editBtn').addEventListener('click', ()=>{
+      overlay.remove();
+      openFormModal('edit', memory);
+    });
+    overlay.querySelector('#delBtn').addEventListener('click', async ()=>{
+      if(confirm('Deze herinnering verwijderen? Dit kan niet ongedaan gemaakt worden.')){
+        await dbDelete(memory.id);
+        overlay.remove();
+        render();
+      }
+    });
+  }
+
+  document.getElementById('addBtn').addEventListener('click', ()=> openFormModal('add'));
+
+  // ---- Backup / restore ----
+  async function downloadBlob(filename, mimeType, content){
+    const blob = new Blob([content], {type: mimeType});
+
+    // Mobile browsers (iOS Safari, in-app browsers, ...) often ignore the
+    // anchor "download" attribute. Prefer the native share sheet when available,
+    // so the file can actually be saved to Files / Drive / etc.
+    if(navigator.canShare){
+      try{
+        const file = new File([blob], filename, {type: mimeType});
+        if(navigator.canShare({files: [file]})){
+          await navigator.share({files: [file], title: filename});
+          return;
+        }
+      }catch(err){
+        // user cancelled the share sheet, or it failed silently — fall through to the link method below
+      }
+    }
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.rel = 'noopener';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=> URL.revokeObjectURL(url), 4000);
+  }
+
+  document.getElementById('backupBtn').addEventListener('click', async ()=>{
+    const memories = await dbGetAll();
+    if(memories.length === 0){
+      alert('Er zijn nog geen herinneringen om te back-uppen.');
+      return;
+    }
+    const payload = {
+      app: 'onze-herinneringen',
+      exportedAt: new Date().toISOString(),
+      memories
+    };
+    const stamp = todayIso();
+    downloadBlob(`herinneringen-backup-${stamp}.json`, 'application/json', JSON.stringify(payload, null, 2));
+  });
+
+  document.getElementById('restoreBtn').addEventListener('click', ()=>{
+    document.getElementById('restoreInput').click();
+  });
+
+  document.getElementById('restoreInput').addEventListener('change', async (e)=>{
+    const file = e.target.files[0];
+    e.target.value = '';
+    if(!file) return;
+    try{
+      const text = await file.text();
+      const data = JSON.parse(text);
+      const items = Array.isArray(data) ? data : data.memories;
+      if(!Array.isArray(items)) throw new Error('Onherkenbaar back-upbestand.');
+
+      const normalized = items
+        .map(m => {
+          if(!m || !m.date) return null;
+          const photos = Array.isArray(m.photos) ? m.photos : (m.photo ? [m.photo] : []);
+          if(photos.length === 0) return null;
+          return { photos: photos.slice(0, MAX_PHOTOS), date: m.date, activity: m.activity || '', text: m.text || '' };
+        })
+        .filter(Boolean);
+
+      if(normalized.length === 0){
+        alert('Geen bruikbare herinneringen gevonden in dit bestand.');
+        return;
+      }
+      if(!confirm(`${normalized.length} dag(en) toevoegen aan je huidige collectie?`)) return;
+
+      for(const m of normalized){
+        await dbAdd(m);
+      }
+      render();
+      alert(`${normalized.length} dag(en) hersteld.`);
+    }catch(err){
+      alert('Kon dit back-upbestand niet lezen. Controleer of het een geldige back-up is.');
+    }
+  });
+
+  // ---- Print ----
+  async function printYear(year){
+    const memories = currentMemories
+      .filter(m => (m.date || '').slice(0,4) === year)
+      .sort((a,b)=> a.date.localeCompare(b.date));
+    if(memories.length === 0) return;
+
+    const PER_PAGE = 3;
+    const pages = [];
+    for(let i = 0; i < memories.length; i += PER_PAGE){
+      pages.push(memories.slice(i, i + PER_PAGE));
+    }
+
+    printRoot.innerHTML = pages.map(pageMemories => `
+      <div class="print-page">
+        <div class="print-title">Onze momentjes van ${year}</div>
+        <div class="print-days">
+          ${pageMemories.map(m => `
+            <div class="print-day">
+              <div class="print-day-photos">
+                ${(m.photos || []).map(p => `<div class="ph"><img src="${p}"></div>`).join('')}
+              </div>
+              <div class="print-day-text">
+                ${m.activity ? `<div class="activity">${escapeHtml(m.activity)}</div>` : ''}
+                <div class="date">${formatDate(m.date)}</div>
+                ${m.text ? `<div class="text">${escapeHtml(m.text)}</div>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    // Reveal off-screen (invisible, out of normal flow) purely to measure real layout boxes
+    printRoot.style.cssText = 'display:block; position:absolute; top:0; left:0; visibility:hidden; z-index:-1;';
+
+    const imgs = Array.from(printRoot.querySelectorAll('.print-day-photos img'));
+    await Promise.all(imgs.map(img => img.decode ? img.decode().catch(()=>{}) : Promise.resolve()));
+
+    printRoot.querySelectorAll('.print-day-photos').forEach(container=>{
+      const phEls = Array.from(container.children);
+      const n = phEls.length;
+      if(n === 0) return;
+      const aspects = phEls.map(ph => {
+        const img = ph.querySelector('img');
+        return (img.naturalWidth || 1) / (img.naturalHeight || 1);
+      });
+      const style = getComputedStyle(container);
+      const gapPx = parseFloat(style.columnGap || style.gap || '0') || 0;
+      const availableWidth = container.clientWidth - gapPx * (n - 1);
+      const availableHeight = container.clientHeight;
+      const sumAspect = aspects.reduce((a,b)=> a + b, 0);
+
+      let rowHeight = availableHeight;
+      if(sumAspect * rowHeight > availableWidth){
+        rowHeight = availableWidth / sumAspect;
+      }
+
+      phEls.forEach((ph, i)=>{
+        ph.style.flex = '0 0 auto';
+        ph.style.width = (aspects[i] * rowHeight) + 'px';
+        ph.style.height = rowHeight + 'px';
+      });
+    });
+
+    // Hand control back to the stylesheet: hidden on screen, forced visible by @media print
+    printRoot.style.cssText = '';
+
+    requestAnimationFrame(()=>{
+      window.print();
+    });
+  }
+  window.addEventListener('afterprint', ()=>{ printRoot.innerHTML = ''; printRoot.removeAttribute('style'); });
+
+  render();
+})();
+</script>
+</body>
+</html>
